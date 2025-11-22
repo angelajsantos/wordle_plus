@@ -1,0 +1,13 @@
+name: wordle_plus
+description: Wordle+ - CS 4750 Mobile Application Development Final Project
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.0.0
+  flutter: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.33.0
