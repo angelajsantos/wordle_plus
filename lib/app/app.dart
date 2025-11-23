@@ -3,7 +3,7 @@
 ///   - Material App, global theme, and route table
 
 import 'package:flutter/material.dart';
-import '../ui/game_screen.dart';
+import '../game/game_screen.dart';
 
 class WordleApp extends StatelessWidget {
   const WordleApp({super.key});

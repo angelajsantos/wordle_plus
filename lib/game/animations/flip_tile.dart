@@ -63,8 +63,8 @@ class _AnimatedFlipTileState extends State<AnimatedFlipTile>
     switch (s) {
       case LetterStatus.correct: return const Color(0xFF6AAA64);
       case LetterStatus.present: return const Color(0xFFC9B458);
-      case LetterStatus.absent:  return const Color(0xFF787C7E);
-      case LetterStatus.unknown: return const Color(0xFF3A3A3C);
+      case LetterStatus.absent:  return const Color(0xFF3A3A3C);
+      case LetterStatus.unknown: return const Color(0xFF787C7E);
     }
   }
 

@@ -5,13 +5,21 @@
 ///   - tracks animations and win/lose state
 
 import 'package:flutter/material.dart';
+import '../../core/models/game_mode.dart';
 import '../../core/models/letter_status.dart';
 
-enum GameStatus { playing, won, lost }
+enum GameStatus {
+  playing,
+  won,
+  lost
+}
 
 class FlutterWordleGame extends ChangeNotifier {
-  static const rows = 6;
-  static const cols = 5;
+  // rows and cols in game mode
+  final GameMode mode;
+  int get rows => mode.rows;
+  int get cols => mode.cols;
+
   final Map<String, LetterStatus> keyStatuses = {
     for (var c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')) c: LetterStatus.unknown,
   };
@@ -37,7 +45,11 @@ class FlutterWordleGame extends ChangeNotifier {
   int shakeRowIndex = -1;   // which row should shake
   int shakeToken = 0;       // bump to re-trigger the shake
 
-  FlutterWordleGame({required this.target}) {
+  FlutterWordleGame({
+    required this.target,
+    this.mode = GameMode.classic,
+  })
+  {
     letters  = List.generate(rows, (_) => List.filled(cols, ''));
     feedback = List.generate(rows, (_) => List.filled(cols, LetterStatus.unknown));
   }
@@ -46,13 +58,13 @@ class FlutterWordleGame extends ChangeNotifier {
   void onKey(String key) {
     if (status != GameStatus.playing) return;
 
-    if (key == '<' && _current.isNotEmpty) {
+    if (key == '>' && _current.isNotEmpty) {
       _current = _current.substring(0, _current.length - 1);
       _syncRowLetters();
       notifyListeners();
       return;
     }
-    if (key == '>') {
+    if (key == '<') {
       _submitCurrent();
       return;
     }

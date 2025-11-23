@@ -39,13 +39,13 @@ class _HudOverlayState extends State<HudOverlay> {
   }
 
   Color _bgFor(String ch) {
-    if (ch == '<' || ch == '>') return const Color(0xFF2A2A34);
+    if (ch == '<' || ch == '>') return const Color(0xFF787C7E);
     final status = widget.keyStatuses[ch] ?? LetterStatus.unknown;
     switch (status) {
       case LetterStatus.correct: return const Color(0xFF6AAA64);
       case LetterStatus.present: return const Color(0xFFC9B458);
-      case LetterStatus.absent:  return const Color(0xFF787C7E);
-      case LetterStatus.unknown: return const Color(0xFF2A2A34);
+      case LetterStatus.absent:  return const Color(0xFF2A2A34);
+      case LetterStatus.unknown: return const Color(0xFF787C7E);
     }
   }
 
@@ -58,9 +58,9 @@ class _HudOverlayState extends State<HudOverlay> {
     if (label.length == 1 && RegExp(r'^[A-Z]$').hasMatch(label)) {
       mapped = label;
     } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-      mapped = '>';
-    } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
       mapped = '<';
+    } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+      mapped = '>';
     }
 
     if (mapped != null) {
@@ -82,7 +82,7 @@ class _HudOverlayState extends State<HudOverlay> {
     const rows = [
       'QWERTYUIOP',
       'ASDFGHJKL',
-      '<ZXCVBNM>', // < = backspace, > = enter
+      '<ZXCVBNM>', // < = enter, > = backspace
     ];
 
     return RawKeyboardListener(
@@ -122,10 +122,10 @@ class _HudOverlayState extends State<HudOverlay> {
                                   : [],
                             ),
                             alignment: Alignment.center,
-                            width: ch == '>' ? 64 : 36,
+                            width: ch == '<' ? 64 : 36,
                             height: 48,
                             child: Text(
-                              ch == '<' ? '⌫' : ch == '>' ? 'ENTER' : ch,
+                              ch == '<' ? 'ENTER' : ch == '>' ? '⌫' : ch,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
