@@ -3,6 +3,7 @@
 ///   - keeps letters feedback matrices
 ///   - validates guesses, computes feedback
 ///   - tracks animations and win/lose state
+///   - has rules for every game mode to follow
 
 import 'package:flutter/material.dart';
 import '../../core/models/game_mode.dart';
