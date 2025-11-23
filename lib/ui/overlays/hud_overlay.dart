@@ -1,45 +1,146 @@
 /// HUD OVERLAY:
-///   on-screen keyboard widget
-///   FIXME: add connection to actual keyboard
+///   on-screen keyboard widget and connection to actual keyboard
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../core/models/letter_status.dart';
 
 typedef OnKey = void Function(String key);
 
-class HudOverlay extends StatelessWidget {
+class HudOverlay extends StatefulWidget {
   final OnKey onKey;
-  const HudOverlay({super.key, required this.onKey});
+  final Map<String, LetterStatus> keyStatuses;
+
+  const HudOverlay({
+    super.key,
+    required this.onKey,
+    required this.keyStatuses,
+  });
+
+  @override
+  State<HudOverlay> createState() => _HudOverlayState();
+}
+
+class _HudOverlayState extends State<HudOverlay> {
+  final FocusNode _focusNode = FocusNode();
+  final Set<String> _pressed = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // ensure we get focus when built
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Color _bgFor(String ch) {
+    if (ch == '<' || ch == '>') return const Color(0xFF2A2A34);
+    final status = widget.keyStatuses[ch] ?? LetterStatus.unknown;
+    switch (status) {
+      case LetterStatus.correct: return const Color(0xFF6AAA64);
+      case LetterStatus.present: return const Color(0xFFC9B458);
+      case LetterStatus.absent:  return const Color(0xFF787C7E);
+      case LetterStatus.unknown: return const Color(0xFF2A2A34);
+    }
+  }
+
+  // physical keyboard handler
+  void _handlePhysicalKey(RawKeyEvent event) {
+    if (event is! RawKeyDownEvent) return;
+    String? mapped;
+    final label = event.logicalKey.keyLabel.toUpperCase();
+
+    if (label.length == 1 && RegExp(r'^[A-Z]$').hasMatch(label)) {
+      mapped = label;
+    } else if (event.logicalKey == LogicalKeyboardKey.enter) {
+      mapped = '>';
+    } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+      mapped = '<';
+    }
+
+    if (mapped != null) {
+      _pressVisual(mapped);
+      widget.onKey(mapped);
+    }
+  }
+
+  // visual press effect
+  void _pressVisual(String ch) {
+    setState(() => _pressed.add(ch));
+    Future.delayed(const Duration(milliseconds: 120), () {
+      if (mounted) setState(() => _pressed.remove(ch));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     const rows = [
       'QWERTYUIOP',
       'ASDFGHJKL',
-      '<ZXCVBNM>' // < = backspace, > = enter
+      '<ZXCVBNM>', // < = backspace, > = enter
     ];
-    return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          for (final row in rows)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (final ch in row.split(''))
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: ElevatedButton(
-                        onPressed: () => onKey(ch),
-                        child: Text(ch == '<' ? '⌫' : ch == '>' ? 'ENTER' : ch),
+
+    return RawKeyboardListener(
+      focusNode: _focusNode,
+      onKey: _handlePhysicalKey,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              for (final row in rows)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final ch in row.split(''))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2),
+                          child: GestureDetector(
+                            onTapDown: (_) {
+                              _pressVisual(ch);
+                              widget.onKey(ch);
+                              _focusNode.requestFocus();
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 100),
+                            curve: Curves.easeOut,
+                            decoration: BoxDecoration(
+                              color: _pressed.contains(ch)
+                                  ? const Color(0xFF3A3A55)
+                                  : _bgFor(ch),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: _pressed.contains(ch)
+                                  ? [const BoxShadow(color: Colors.black45, blurRadius: 4)]
+                                  : [],
+                            ),
+                            alignment: Alignment.center,
+                            width: ch == '>' ? 64 : 36,
+                            height: 48,
+                            child: Text(
+                              ch == '<' ? '⌫' : ch == '>' ? 'ENTER' : ch,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                ],
-              ),
-            ),
-          const SizedBox(height: 12),
-        ],
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
       ),
     );
   }

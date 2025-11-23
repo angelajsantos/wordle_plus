@@ -12,6 +12,9 @@ enum GameStatus { playing, won, lost }
 class FlutterWordleGame extends ChangeNotifier {
   static const rows = 6;
   static const cols = 5;
+  final Map<String, LetterStatus> keyStatuses = {
+    for (var c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')) c: LetterStatus.unknown,
+  };
 
   final String target;
   GameStatus status = GameStatus.playing;
@@ -78,6 +81,10 @@ class FlutterWordleGame extends ChangeNotifier {
     for (var i = 0; i < cols; i++) {
       feedback[_row][i] = fb[i];
     }
+    for (var i = 0; i < cols; i++) {
+      final ch = _current[i].toUpperCase();
+      keyStatuses[ch] = _prefer(keyStatuses[ch]!, fb[i]);
+    }
     lastRevealedRow = _row;
 
     final won = fb.every((e) => e == LetterStatus.correct);
@@ -96,6 +103,19 @@ class FlutterWordleGame extends ChangeNotifier {
     }
     _syncRowLetters();
     notifyListeners();
+  }
+
+  // Highest wins: correct > present > absent > unknown
+  LetterStatus _prefer(LetterStatus oldS, LetterStatus newS) {
+    int rank(LetterStatus s) {
+      switch (s) {
+        case LetterStatus.unknown: return 0;
+        case LetterStatus.absent:  return 1;
+        case LetterStatus.present: return 2;
+        case LetterStatus.correct: return 3;
+      }
+    }
+    return rank(newS) >= rank(oldS) ? newS : oldS;
   }
 
   List<LetterStatus> _computeFeedback(String target, String guess) {

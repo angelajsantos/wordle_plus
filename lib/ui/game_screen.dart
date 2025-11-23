@@ -6,7 +6,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'overlays/hud_overlay.dart';
+import '../../ui/overlays/hud_overlay.dart';
+import '../core/models/letter_status.dart';
 import 'logic/flutter_wordle_game.dart';
 import 'widgets/board_widget.dart';
 import 'messages/endgame_messages.dart';
@@ -48,7 +49,7 @@ class _GameScreenState extends State<GameScreen> {
                   child: BoardWidget(
                     letters: game.letters,
                     feedback: game.feedback,
-                    tileSize: 72,
+                    tileSize: 64,
                     gap: 10,
                     // animations:
                     revealRowIndex: game.lastRevealedRow,
@@ -61,7 +62,10 @@ class _GameScreenState extends State<GameScreen> {
                 const Spacer(),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: HudOverlay(onKey: game.onKey),
+                  child: HudOverlay(
+                    onKey: game.onKey,
+                    keyStatuses: Map<String, LetterStatus>.from(game.keyStatuses),
+                  )
                 ),
               ],
             );
