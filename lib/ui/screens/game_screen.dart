@@ -127,9 +127,9 @@ class _GameScreenState extends State<GameScreen> {
                         Center(
                           child: BoardWidget(
                             letters: game.letters,
-                            feedback: game.feedback,
-                            tileSize: 64,
-                            gap: 10,
+                            feedback: game.displayFeedback,
+                            tileSize: 60,
+                            gap: 8,
                             revealRowIndex: game.lastRevealedRow,
                             shakeRowIndex: game.shakeRowIndex,
                             shakeTrigger: game.shakeToken,
@@ -145,7 +145,7 @@ class _GameScreenState extends State<GameScreen> {
                           alignment: Alignment.bottomCenter,
                           child: HudOverlay(
                             onKey: game.onKey,
-                            keyStatuses: Map<String, LetterStatus>.from(game.keyStatuses),
+                            keyStatuses: Map<String, LetterStatus>.from(game.displayKeyStatuses),
                           ),
                         ),
                       ],

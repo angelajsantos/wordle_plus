@@ -60,6 +60,68 @@ class FlutterWordleGame extends ChangeNotifier {
     feedback = List.generate(rows, (_) => List.filled(cols, LetterStatus.unknown));
   }
 
+  /// ----- new for different feedback display in game modes!
+  /// feedback matrix for display
+  List<List<LetterStatus>> get displayFeedback {
+    if (mode == GameMode.swap) {
+      return [
+        for (final row in feedback)
+          [for (final s in row) _swapStatus(s)]
+      ];
+    }
+
+    if (mode == GameMode.noYellowHints) {
+      return [
+        for (final row in feedback)
+          [for (final s in row) _hideYellow(s)]
+      ];
+    }
+
+    return feedback; // classic
+  }
+
+  /// keyboard key statuses for display
+  Map<String, LetterStatus> get displayKeyStatuses {
+    if (mode == GameMode.swap) {
+      return {
+        for (final e in keyStatuses.entries)
+          e.key: _swapStatus(e.value),
+      };
+    }
+
+    if (mode == GameMode.noYellowHints) {
+      return {
+        for (final e in keyStatuses.entries)
+          e.key: _hideYellow(e.value),
+      };
+    }
+
+    return keyStatuses;
+  }
+
+  /// swap meaning of colors:
+  /// green = incorrect place, yellow = wrong, gray = correct
+  LetterStatus _swapStatus(LetterStatus status) {
+    switch (status) {
+      case LetterStatus.correct:
+        return LetterStatus.absent;   // show gray
+      case LetterStatus.present:
+        return LetterStatus.correct;  // show green
+      case LetterStatus.absent:
+        return LetterStatus.present;  // show yellow
+      case LetterStatus.unknown:
+        return LetterStatus.unknown;
+    }
+  }
+
+  /// hiding yellow
+  LetterStatus _hideYellow(LetterStatus status) {
+    if (status == LetterStatus.present) {
+      return LetterStatus.absent;
+    }
+    return status;
+  }
+
   // Input from keyboard overlay
   void onKey(String key) {
     if (status != GameStatus.playing) return;
