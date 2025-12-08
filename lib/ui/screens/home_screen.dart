@@ -5,6 +5,7 @@
 ///   TODO: fix ui styling
 
 import 'package:flutter/material.dart';
+import '../theme/retro_theme.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,45 +13,47 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: RetroTheme.bg,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 480),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Wordle+',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.5,
-                ),
-              ),
+              const Text('Wordle+', style: RetroTheme.logo),
               const SizedBox(height: 12),
               const Text(
-                'A fun Wordle remake',
-                style: TextStyle(
-                  color: Color(0xFFBDBDBD),
-                  fontSize: 14,
-                ),
+                'RETRO EDITION',
+                style: RetroTheme.section),
+              const SizedBox(height: 24),
+              const Text(
+                'A small Wordle-inspired game\nwith extra modes and chaos.',
+                style: RetroTheme.body,
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 40),
 
               // play → modes list
-              TextButton(
+              PixelButton(
+                label: 'Play',
                 onPressed: () => Navigator.pushNamed(context, '/modes'),
-                child: const Text('Play', style: TextStyle(fontSize: 18)),
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
 
-              // About → credits & how to play
-              TextButton(
+              // about → credits & how to play
+              PixelButton(
+                label: 'About',
+                primary: false,
                 onPressed: () => Navigator.pushNamed(context, '/about'),
-                child: const Text('About', style: TextStyle(fontSize: 18)),
               ),
 
               const SizedBox(height: 48),
+              const Text(
+                'Developed for CS 4750 by Team 16',
+                style: RetroTheme.caption,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),

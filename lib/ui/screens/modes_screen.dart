@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import '../../core/models/game_mode.dart';
 import 'game_screen.dart';
+import '../theme/retro_theme.dart';
 
 class ModesScreen extends StatelessWidget {
   const ModesScreen({
@@ -17,11 +18,12 @@ class ModesScreen extends StatelessWidget {
     final modes = GameMode.values;
 
     return Scaffold(
+      backgroundColor: RetroTheme.bg,
       appBar: AppBar(
-        title: const Text('Modes'),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF121213),
+        backgroundColor: RetroTheme.bg,
         elevation: 0,
+        title: const Text('MODES', style: RetroTheme.title),
+        centerTitle: true,
       ),
       body: Center(
         child: ConstrainedBox(
@@ -30,23 +32,49 @@ class ModesScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             itemBuilder: (_, i) {
               final mode = modes[i];
-              return ListTile(
-                title: Text(mode.label),
-                subtitle: Text(mode.description),
-                trailing: FilledButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => GameScreen(mode: mode),
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: RetroTheme.surface,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: RetroTheme.border, width: 2),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mode.label.toUpperCase(),
+                            style: RetroTheme.title.copyWith(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(mode.description, style: RetroTheme.body),
+                        ],
                       ),
-                    );
-                  },
-                  child: const Text('Play'),
+                    ),
+                    const SizedBox(width: 12),
+                    PixelButton(
+                      label: 'Play',
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => GameScreen(mode: mode),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               );
             },
-            separatorBuilder: (_, __) => const Divider(),
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemCount: modes.length,
           ),
         ),

@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/models/letter_status.dart';
+import '../theme/retro_theme.dart';
 
 typedef OnKey = void Function(String key);
 
@@ -39,7 +40,6 @@ class _HudOverlayState extends State<HudOverlay> {
   }
 
   Color _bgFor(String ch) {
-    if (ch == '<' || ch == '>') return const Color(0xFF787C7E);
     final status = widget.keyStatuses[ch] ?? LetterStatus.unknown;
     switch (status) {
       case LetterStatus.correct: return const Color(0xFF6AAA64);
@@ -114,21 +114,22 @@ class _HudOverlayState extends State<HudOverlay> {
                             curve: Curves.easeOut,
                             decoration: BoxDecoration(
                               color: _pressed.contains(ch)
-                                  ? const Color(0xFF3A3A55)
+                                  ? RetroTheme.border
                                   : _bgFor(ch),
                               borderRadius: BorderRadius.circular(8),
-                              boxShadow: _pressed.contains(ch)
-                                  ? [const BoxShadow(color: Colors.black45, blurRadius: 4)]
-                                  : [],
+                              border: Border.all(
+                                color: RetroTheme.border,
+                                width: 2,
+                              ),
                             ),
                             alignment: Alignment.center,
-                            width: ch == '<' ? 64 : 36,
-                            height: 48,
+                            width: ch == '<' ? 72 : 36,
+                            height: 40,
                             child: Text(
                               ch == '<' ? 'ENTER' : ch == '>' ? '⌫' : ch,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                              style: RetroTheme.button.copyWith(
+                                fontSize: ch == '<' ? 10 : 11,
+                                color: RetroTheme.textPrimary,
                               ),
                             ),
                           ),
@@ -137,7 +138,7 @@ class _HudOverlayState extends State<HudOverlay> {
                     ],
                   ),
                 ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
             ],
           ),
         ),
