@@ -26,13 +26,32 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   bool _endShown = false;
 
+  Color _timerColor(FlutterWordleGame game) {
+    if (!game.isTimed || game.secondsLeft == null) {
+      return Colors.white;
+    }
+
+    final s = game.secondsLeft!;
+
+    if (s > 30) {
+      // plenty of time left
+      return Colors.greenAccent;
+    } else if (s > 10) {
+      // getting closer
+      return Colors.amberAccent;
+    } else {
+      // danger zone
+      return Colors.redAccent;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get WordService from Provider
     final wordService = Provider.of<WordService>(context, listen: false);
 
     // Get target word from WordService (random)
-    final target = wordService.getRandomAnswer();
+    final target = wordService.getRandomAnswer(length: widget.mode.cols);
 
     return ChangeNotifierProvider(
       key: ValueKey('game-${widget.mode.name}-$target'),
@@ -98,6 +117,21 @@ class _GameScreenState extends State<GameScreen> {
                           textAlign: TextAlign.center,
                         ),
 
+                        // timer display for timed mode
+                        if (game.isTimed && game.secondsLeft != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              'Time Left: ${game.formattedTime}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: _timerColor(game),   // <- dynamic color
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+
                         const SizedBox(height: 8),
 
                         // Divider
@@ -126,6 +160,8 @@ class _GameScreenState extends State<GameScreen> {
                         // Centered board
                         Center(
                           child: BoardWidget(
+                            rows: game.rows,
+                            cols: game.cols,
                             letters: game.letters,
                             feedback: game.displayFeedback,
                             tileSize: 60,

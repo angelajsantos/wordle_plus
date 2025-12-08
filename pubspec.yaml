@@ -26,3 +26,4 @@ flutter:
 
   assets:
     - assets/words/words.txt
+    - assets/words/words_6.txt
