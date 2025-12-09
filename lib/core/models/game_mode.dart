@@ -13,6 +13,8 @@ enum GameMode {
   sixLetter,      // 6 letters, 6 rows
   noYellowHints,  // shows green/gray, hide yellow hints (display only)
   timed,          // timer
+  customWord,     // Custom Words
+  customWordAdd,  // Add custom words
 }
 
 extension GameModeConfig on GameMode {
@@ -23,6 +25,8 @@ extension GameModeConfig on GameMode {
       case GameMode.sixLetter:      return '6-Letter';
       case GameMode.noYellowHints:  return 'No Yellow';
       case GameMode.timed:          return 'Timed';
+      case GameMode.customWord:     return 'Custom Words';
+      case GameMode.customWordAdd:  return 'Add Custom Words';
     }
   }
 
@@ -48,6 +52,8 @@ extension GameModeConfig on GameMode {
       case GameMode.sixLetter:      return '6 rows • 6 letters';
       case GameMode.noYellowHints:  return 'Only green/gray shown, no yellow hints';
       case GameMode.timed:          return 'Solve under a time limit';
+      case GameMode.customWord:     return 'Play with Custom Words';
+      case GameMode.customWordAdd:  return 'Add your own custom words';
     }
   }
 }

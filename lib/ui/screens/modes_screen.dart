@@ -4,6 +4,7 @@
 ///   TODO: fix ui styling
 
 import 'package:flutter/material.dart';
+import 'package:wordle_plus/ui/screens/custom_word_add_screen.dart';
 import '../../core/models/game_mode.dart';
 import 'game_screen.dart';
 import '../theme/retro_theme.dart';
@@ -62,10 +63,18 @@ class ModesScreen extends StatelessWidget {
                       label: 'Play',
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       onPressed: () {
+                        Widget screen;
+
+                        if (mode == GameMode.customWordAdd) {
+                          screen = const CustomWordAddScreen();
+                        } else {
+                          screen = GameScreen(mode: mode);
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => GameScreen(mode: mode),
+                            builder: (_) => screen,
                           ),
                         );
                       },

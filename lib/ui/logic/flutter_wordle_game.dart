@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../../core/models/game_mode.dart';
 import '../../core/models/letter_status.dart';
 import '../../core/services/word_service.dart';
+import '../../core/services/custom_word_service.dart';
 
 enum GameStatus {
   playing,
@@ -20,6 +21,7 @@ enum GameStatus {
 class FlutterWordleGame extends ChangeNotifier {
   final GameMode mode;
   final WordService wordService;
+  final CustomWordService customService;
 
   int get rows => mode.rows;
   int get cols => mode.cols;
@@ -60,6 +62,7 @@ class FlutterWordleGame extends ChangeNotifier {
   FlutterWordleGame({
     required this.target,
     required this.wordService,
+    required this.customService,
     this.mode = GameMode.classic,
   }) {
     letters = List.generate(rows, (_) => List.filled(cols, ''));
@@ -169,7 +172,7 @@ class FlutterWordleGame extends ChangeNotifier {
     }
   }
 
-  void _submitCurrent() {
+  Future<void> _submitCurrent() async {
     // checks if word is complete
     if (_current.length != cols) {
       _triggerShake();
@@ -177,10 +180,13 @@ class FlutterWordleGame extends ChangeNotifier {
     }
 
     // validate word using wordService
-    if (!wordService.isValidGuess(_current, length: cols)) {
-      showInvalidMessage = true;
-      _triggerShake();
-      return;
+    final isValid = wordService.isValidGuess(_current, length: cols) ||
+        (await customService.getWords()).contains(_current.toUpperCase());
+
+    if (!isValid) {
+    _triggerShake();
+    notifyListeners();
+    return;
     }
 
     // computes feedback
