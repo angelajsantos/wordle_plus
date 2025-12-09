@@ -3,21 +3,27 @@
 ///   example:
 ///   - provide WordService, ProgressService, etc. to widgets
 
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/services/word_service.dart';
 import '../core/services/progress_service.dart';
 import '../core/services/achievement_service.dart';
 
 
-List<Provider> buildProviders() {
-  // Load word lists (you can move to asset loading async on splash)
-  final allowed = <String>{/* load asset text into set */};
-  final answers = <String>[/* load answers */];
-
-
+List<Provider> buildProviders(WordService wordService) {
   return [
-    Provider(create: (_) => WordService(allowed: allowed, answers: answers)),
+    Provider<WordService>.value(value: wordService),
     Provider(create: (_) => ProgressService()),
     Provider<AchievementService>(create: (_) => NoopAchievementService()),
   ];
+}
+
+Widget buildAppWithProviders({
+  required WordService wordService,
+  required Widget child,
+}) {
+  return MultiProvider(
+    providers: buildProviders(wordService),
+    child: child,
+  );
 }
