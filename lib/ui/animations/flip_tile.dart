@@ -43,12 +43,12 @@ class _AnimatedFlipTileState extends State<AnimatedFlipTile>
     super.didUpdateWidget(old);
     if (old.status == LetterStatus.unknown &&
         widget.status != LetterStatus.unknown) {
-      // trigger one flip per reveal
+      // triggers one flip per reveal
       Future.delayed(Duration(milliseconds: widget.flipDelayMs), () async {
         if (!mounted) return;
-        await _ctrl.reverse(from: 1); // scaleY 1 -> 0
+        await _ctrl.reverse(from: 1);
         setState(() => _lastStatus = widget.status); // swap face
-        await _ctrl.forward(from: 0); // scaleY 0 -> 1
+        await _ctrl.forward(from: 0);
       });
     }
   }

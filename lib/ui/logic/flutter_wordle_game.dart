@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../../core/models/game_mode.dart';
 import '../../core/models/letter_status.dart';
 import '../../core/services/word_service.dart';
+import '../../core/services/custom_word_service.dart';
 
 enum GameStatus {
   playing,
@@ -20,6 +21,7 @@ enum GameStatus {
 class FlutterWordleGame extends ChangeNotifier {
   final GameMode mode;
   final WordService wordService;
+  final CustomWordService customService;
 
   int get rows => mode.rows;
   int get cols => mode.cols;
@@ -60,6 +62,7 @@ class FlutterWordleGame extends ChangeNotifier {
   FlutterWordleGame({
     required this.target,
     required this.wordService,
+    required this.customService,
     this.mode = GameMode.classic,
   }) {
     letters = List.generate(rows, (_) => List.filled(cols, ''));
@@ -136,11 +139,11 @@ class FlutterWordleGame extends ChangeNotifier {
     return status;
   }
 
-  // Input from keyboard overlay
+  // input from keyboard overlay
   void onKey(String key) {
     if (status != GameStatus.playing) return;
 
-    // Hide invalid message when user starts typing again
+    // hides invalid message when user starts typing again
     if (showInvalidMessage) {
       showInvalidMessage = false;
       notifyListeners();
@@ -169,28 +172,31 @@ class FlutterWordleGame extends ChangeNotifier {
     }
   }
 
-  void _submitCurrent() {
-    // Check if word is complete
+  Future<void> _submitCurrent() async {
+    // checks if word is complete
     if (_current.length != cols) {
       _triggerShake();
       return;
     }
 
-    // Validate word using WordService
-    if (!wordService.isValidGuess(_current, length: cols)) {
-      showInvalidMessage = true;
-      _triggerShake();
-      return;
+    // validate word using wordService
+    final isValid = wordService.isValidGuess(_current, length: cols) ||
+        (await customService.getWords()).contains(_current.toUpperCase());
+
+    if (!isValid) {
+    _triggerShake();
+    notifyListeners();
+    return;
     }
 
-    // Compute feedback
+    // computes feedback
     final fb = wordService.feedback(target, _current);
 
     for (var i = 0; i < cols; i++) {
       feedback[_row][i] = fb[i];
     }
 
-    // Update keyboard colors
+    // updates keyboard colors
     for (var i = 0; i < cols; i++) {
       final ch = _current[i].toUpperCase();
       keyStatuses[ch] = _prefer(keyStatuses[ch]!, fb[i]);
@@ -198,7 +204,7 @@ class FlutterWordleGame extends ChangeNotifier {
 
     lastRevealedRow = _row;
 
-    // Check win condition
+    // check win condition
     final won = fb.every((e) => e == LetterStatus.correct);
     if (won) {
       status = GameStatus.won;
@@ -207,11 +213,11 @@ class FlutterWordleGame extends ChangeNotifier {
       return;
     }
 
-    // Move to next row
+    // move to next row
     _row++;
     _current = '';
 
-    // Check lose condition
+    // check lose condition
     if (_row >= rows) {
       status = GameStatus.lost;
       _timer?.cancel(); // stop timer when lost
@@ -229,7 +235,7 @@ class FlutterWordleGame extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Prefer higher status (correct > present > absent > unknown)
+  // prefer higher status (correct > present > absent > unknown)
   LetterStatus _prefer(LetterStatus oldS, LetterStatus newS) {
     int rank(LetterStatus s) {
       switch (s) {
