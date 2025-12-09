@@ -1,13 +1,14 @@
 /// MODES SCREEN:
 ///   modes screen that has
 ///   - list of all modes
-///   TODO: fix ui styling
 
 import 'package:flutter/material.dart';
 import 'package:wordle_plus/ui/screens/custom_word_add_screen.dart';
 import '../../core/models/game_mode.dart';
 import 'game_screen.dart';
 import '../theme/retro_theme.dart';
+import '../../core/services/progress_service.dart';
+import '../messages/retro_message.dart';
 
 class ModesScreen extends StatelessWidget {
   const ModesScreen({
@@ -60,21 +61,39 @@ class ModesScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     PixelButton(
-                      label: 'Play',
+                      label: 'GO!',
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      onPressed: () {
-                        Widget screen;
-
+                      onPressed: () async {
+                        // handles custom-word-add separately
                         if (mode == GameMode.customWordAdd) {
-                          screen = const CustomWordAddScreen();
-                        } else {
-                          screen = GameScreen(mode: mode);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const CustomWordAddScreen(),
+                            ),
+                          );
+                          return;
                         }
 
+                        // gates daily mode
+                        if (mode == GameMode.daily) {
+                          final progress = ProgressService();
+                          final already = await progress.hasPlayedDailyToday();
+
+                          if (already) {
+                            RetroMessage.show(
+                              context,
+                              "You've already completed today's daily.\nCome back tomorrow!",
+                            );
+                            return;
+                          }
+                        }
+
+                        // all other modes go to game screen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => screen,
+                            builder: (_) => GameScreen(mode: mode),
                           ),
                         );
                       },

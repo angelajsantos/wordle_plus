@@ -5,7 +5,7 @@ class RetroTheme {
   static const Color bg = Color(0xFF050608);
   static const Color surface = Color(0xFF15151B);
   static const Color border = Color(0xFF31313F);
-  static const Color accent = Color(0xFFFFD54F); // yellow
+  static const Color accent = Color(0xFF66BB6A); // green
   static const Color accentAlt = Color(0xFF80CBC4); // teal
   static const Color textPrimary = Colors.white;
   static const Color textMuted = Color(0xFF9E9E9E);

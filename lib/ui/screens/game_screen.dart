@@ -4,9 +4,12 @@
 ///   - Centers board widget and anchors keyboard overlay
 ///   - Shows win/lose sheet
 ///   - Validates guesses using WordService
+///   - Uses CustomWordService for custom mode
+///   - Uses ProgressService to track stats & daily streaks
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/services/progress_service.dart';
 import '../overlays/keyboard_overlay.dart';
 import '../../core/models/letter_status.dart';
 import '../../core/models/game_mode.dart';
@@ -38,10 +41,10 @@ class _GameScreenState extends State<GameScreen> {
 
     if (s > 30) {
       // plenty of time left
-      return RetroTheme.accentAlt;
+      return RetroTheme.accent;
     } else if (s > 10) {
       // getting closer
-      return RetroTheme.accent;
+      return Color(0xFFC9B458);
     } else {
       // danger zone
       return Colors.redAccent;
@@ -52,7 +55,9 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     final wordService = Provider.of<WordService>(context, listen: false);
     final customService = Provider.of<CustomWordService>(context, listen: false);
+    final progressService = ProgressService();
 
+    // assigns target from correct word bank based on mode
     Future<String> _resolveTarget() async {
       if (widget.mode == GameMode.customWord) {
         final w = await customService.getRandomWord(length: widget.mode.cols);
@@ -104,6 +109,14 @@ class _GameScreenState extends State<GameScreen> {
                   // shows win/lose sheet once
                   if (!_endShown && game.status != GameStatus.playing) {
                     _endShown = true;
+
+                    final won = game.status == GameStatus.won;
+                    // saves progress (global + daily streak)
+                    progressService.recordGame(
+                      win: won,
+                      isDaily: widget.mode == GameMode.daily,
+                    );
+
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       EndGameMessages.showEndSheet(
                         context: context,

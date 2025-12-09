@@ -8,6 +8,7 @@
 /// 2) Provide label/rows/cols in the extension
 
 enum GameMode {
+  daily,          // daily challenge
   classic,
   swap,           // swap meaning of colors (display only)
   sixLetter,      // 6 letters, 6 rows
@@ -20,6 +21,7 @@ enum GameMode {
 extension GameModeConfig on GameMode {
   String get label {
     switch (this) {
+      case GameMode.daily:          return 'Daily';
       case GameMode.classic:        return 'Classic';
       case GameMode.swap:           return 'Swap';
       case GameMode.sixLetter:      return '6-Letter';
@@ -47,6 +49,7 @@ extension GameModeConfig on GameMode {
   /// short blurb for the modes list
   String get description {
     switch (this) {
+      case GameMode.daily:          return 'One shared puzzle per day';
       case GameMode.classic:        return '6 rows • 5 letters';
       case GameMode.swap:           return 'Color meanings are shuffled (for fun)';
       case GameMode.sixLetter:      return '6 rows • 6 letters';
