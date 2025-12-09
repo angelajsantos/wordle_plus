@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
                 style: RetroTheme.section),
               const SizedBox(height: 24),
               const Text(
-                'A small Wordle-inspired game\nwith extra modes and chaos.',
+                'A small Wordle-inspired game\nwith extra modes and chaos',
                 style: RetroTheme.body,
                 textAlign: TextAlign.center,
               ),

@@ -11,7 +11,7 @@ enum GameMode {
   classic,
   swap,           // swap meaning of colors (display only)
   sixLetter,      // 6 letters, 6 rows
-  noYellowHints,  // show green/gray, hide yellow hints (display only)
+  noYellowHints,  // shows green/gray, hide yellow hints (display only)
   timed,          // timer
 }
 

@@ -82,7 +82,7 @@ class PixelButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bgColor,
           border: Border.all(color: RetroTheme.border, width: 2),
-          borderRadius: BorderRadius.circular(4), // chunky corners
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
           label.toUpperCase(),

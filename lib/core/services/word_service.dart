@@ -20,7 +20,7 @@ class WordService {
   /// Factory constructor to load words from asset file
   static Future<WordService> loadFromAssets() async {
     try {
-      // Load five letter words from single file
+      // loads five letter words from single file
       final wordsText5 = await rootBundle.loadString('assets/words/words.txt');
       final words5 = wordsText5
           .split('\n')
@@ -28,10 +28,10 @@ class WordService {
           .where((w) => w.isNotEmpty && w.length == 5)
           .toList();
 
-      // Use all words as allowed guesses
+      // use all words as allowed guesses
       final allowed5 = words5.toSet();
 
-      // Use all words as potential answers
+      // use all words as potential answers
       final answers5 = words5;
 
       print(' Loaded ${allowed5.length} allowed words');
@@ -42,7 +42,7 @@ class WordService {
       try {
         wordsText6 = await rootBundle.loadString('assets/words/words_6.txt');
       } catch (_) {
-        // If you haven't added the file yet, just start with empty 6-letter sets
+        // if file not yet added, just starts with empty 6-letter sets
         wordsText6 = '';
       }
 
@@ -89,7 +89,7 @@ class WordService {
       return g.length == 6 && allowed6.contains(g);
     }
     else {
-      // default to five-letter
+      // defaults to five-letter
       return g.length == 5 && allowed5.contains(g);
     }
   }
@@ -101,7 +101,7 @@ class WordService {
     if (length == 6 && answers6.isNotEmpty) {
       pool = answers6;
     } else {
-      // fall back to 5-letter
+      // falls back to 5-letter
       pool = answers5;
     }
 
@@ -120,7 +120,7 @@ class WordService {
       pool = answers5;
     }
     if (pool.isEmpty) return 'MAGIC';
-    // Use days since epoch as seed for consistency
+    // uses days since epoch as seed for consistency
     final daysSinceEpoch = date.difference(DateTime(2024, 1, 1)).inDays;
     return pool[daysSinceEpoch % pool.length];
   }
@@ -133,7 +133,7 @@ class WordService {
     final len = t.length;
     final result = List<LetterStatus>.filled(len, LetterStatus.absent);
 
-    // First pass: mark correct positions
+    // first pass: marks correct positions
     final unmatched = <int>[];
     final remainingCounts = <String, int>{};
     for (var i = 0; i < len; i++) {
@@ -145,7 +145,7 @@ class WordService {
       }
     }
 
-    // Second pass: mark present letters
+    // second pass: marks present letters
     for (final i in unmatched) {
       final c = g[i];
       final left = remainingCounts[c] ?? 0;

@@ -48,10 +48,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get WordService from Provider
     final wordService = Provider.of<WordService>(context, listen: false);
-
-    // Get target word from WordService (random)
     final target = wordService.getRandomAnswer(length: widget.mode.cols);
 
     return ChangeNotifierProvider(
@@ -59,7 +56,7 @@ class _GameScreenState extends State<GameScreen> {
       create: (_) => FlutterWordleGame(
         target: target,
         mode: widget.mode,
-        wordService: wordService,  // Pass WordService
+        wordService: wordService,
       ),
       child: Scaffold(
         backgroundColor: RetroTheme.bg,
@@ -78,7 +75,7 @@ class _GameScreenState extends State<GameScreen> {
         ),
         body: Consumer<FlutterWordleGame>(
           builder: (context, game, _) {
-            // Show win/lose sheet once
+            // shows win/lose sheet once
             if (!_endShown && game.status != GameStatus.playing) {
               _endShown = true;
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -111,7 +108,7 @@ class _GameScreenState extends State<GameScreen> {
 
                     const SizedBox(height: 2),
 
-                    // Divider
+                    // divider
                     Container(
                       height: 1,
                       color: RetroTheme.border,
@@ -120,7 +117,7 @@ class _GameScreenState extends State<GameScreen> {
 
                     const SizedBox(height: 4),
 
-                    // Invalid word message
+                    // invalid word message
                     if (game.showInvalidMessage)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
@@ -132,7 +129,7 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
 
-                    // Centered board
+                    // centered board
                     Center(
                       child: BoardWidget(
                         rows: game.rows,
@@ -151,7 +148,7 @@ class _GameScreenState extends State<GameScreen> {
 
                     const Spacer(),
 
-                    // Keyboard
+                    // keyboard
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: HudOverlay(
