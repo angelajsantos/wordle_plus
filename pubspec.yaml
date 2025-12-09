@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  confetti: ^0.7.0
   flame: ^1.33.0
   collection: ^1.18.0
   provider: ^6.0.5
@@ -26,3 +27,9 @@ flutter:
 
   assets:
     - assets/words/words.txt
+    - assets/words/words_6.txt
+
+  fonts:
+    - family: PressStart2P
+      fonts:
+        - asset: assets/fonts/PressStart2P-Regular.ttf

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../core/models/letter_status.dart';
 import '../animations/flip_tile.dart';
 import '../animations/row_effects.dart';
+import '../theme/retro_theme.dart';
 
 class BoardWidget extends StatelessWidget {
   final int rows;
@@ -43,39 +44,46 @@ class BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(rows, (r) {
-        final reveal = r == revealRowIndex;
-        final shake = r == shakeRowIndex;
-        final bounce = reveal && bounceRevealedRow;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: gap * 0.6),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(rows, (r) {
+          final reveal = r == revealRowIndex;
+          final shake = r == shakeRowIndex;
+          final bounce = reveal && bounceRevealedRow;
 
-        final row = Row(
-          key: ValueKey('row-content-$r'),
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(cols, (c) {
-            return Padding(
-              padding: EdgeInsets.all(gap / 2),
-              child: AnimatedFlipTile(
-                key: ValueKey('tile-$r-$c'),
-                letter: letters[r][c],
-                status: feedback[r][c],
-                size: tileSize,
-                flipDelayMs: reveal ? c * 110 : 0,
-              ),
-            );
-          }),
-        );
+          final row = Row(
+            key: ValueKey('row-content-$r'),
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(cols, (c) {
+              return Padding(
+                padding: EdgeInsets.all(gap / 2),
+                child: AnimatedFlipTile(
+                  key: ValueKey('tile-$r-$c'),
+                  letter: letters[r][c],
+                  status: feedback[r][c],
+                  size: tileSize,
+                  flipDelayMs: reveal ? c * 110 : 0,
+                ),
+              );
+            }),
+          );
 
-        return RowEffects(
-          key: ValueKey('row-effects-$r'),
-          shake: shake,
-          bounce: bounce,
-          shakeTrigger: shake ? shakeTrigger : 0,
-          bounceTrigger: bounce ? bounceTrigger : 0,
-          child: row,
-        );
-      }),
+          return RowEffects(
+            key: ValueKey('row-effects-$r'),
+            shake: shake,
+            bounce: bounce,
+            shakeTrigger: shake ? shakeTrigger : 0,
+            bounceTrigger: bounce ? bounceTrigger : 0,
+            child: row,
+          );
+        }),
+      ),
     );
   }
 }

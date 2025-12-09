@@ -14,6 +14,7 @@ import '../../core/services/word_service.dart';
 import '../logic/flutter_wordle_game.dart';
 import '../widgets/board_widget.dart';
 import '../messages/endgame_messages.dart';
+import '../theme/retro_theme.dart';
 
 class GameScreen extends StatefulWidget {
   final GameMode mode;
@@ -26,13 +27,32 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   bool _endShown = false;
 
+  Color _timerColor(FlutterWordleGame game) {
+    if (!game.isTimed || game.secondsLeft == null) {
+      return RetroTheme.textPrimary;
+    }
+
+    final s = game.secondsLeft!;
+
+    if (s > 30) {
+      // plenty of time left
+      return RetroTheme.accentAlt;
+    } else if (s > 10) {
+      // getting closer
+      return RetroTheme.accent;
+    } else {
+      // danger zone
+      return Colors.redAccent;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get WordService from Provider
     final wordService = Provider.of<WordService>(context, listen: false);
 
     // Get target word from WordService (random)
-    final target = wordService.getRandomAnswer();
+    final target = wordService.getRandomAnswer(length: widget.mode.cols);
 
     return ChangeNotifierProvider(
       key: ValueKey('game-${widget.mode.name}-$target'),
@@ -42,7 +62,20 @@ class _GameScreenState extends State<GameScreen> {
         wordService: wordService,  // Pass WordService
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFF121213),
+        backgroundColor: RetroTheme.bg,
+        appBar: AppBar(
+          backgroundColor: RetroTheme.bg,
+          elevation: 0,
+          centerTitle: true,
+          iconTheme: const IconThemeData(
+            color: RetroTheme.textPrimary, // make arrow white/pixel-like
+            size: 20,
+          ),
+          title: Text(
+            widget.mode.label.toUpperCase(),
+            style: RetroTheme.title,
+          ),
+        ),
         body: Consumer<FlutterWordleGame>(
           builder: (context, game, _) {
             // Show win/lose sheet once
@@ -58,101 +91,77 @@ class _GameScreenState extends State<GameScreen> {
               });
             }
 
-            return Stack(
-              children: [
-                // Back button
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8, top: 8),
-                      child: TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          minimumSize: const Size(48, 28),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          foregroundColor: Colors.white70,
-                        ),
-                        child: const Text('Back'),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Main content: title, board, and keyboard
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 480),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 16),
-
-                        // Mode title
-                        Text(
-                          widget.mode.label.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.w700,
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: Column(
+                  children: [
+                    // timer display for timed mode
+                    if (game.isTimed && game.secondsLeft != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'TIME LEFT: ${game.formattedTime}',
+                          style: RetroTheme.section.copyWith(
+                            color: _timerColor(game),
                           ),
                           textAlign: TextAlign.center,
                         ),
+                      ),
 
-                        const SizedBox(height: 8),
+                    const SizedBox(height: 2),
 
-                        // Divider
-                        Container(
-                          height: 1,
-                          color: const Color(0x22FFFFFF),
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        // Invalid word message
-                        if (game.showInvalidMessage)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              'Not in word list',
-                              style: TextStyle(
-                                color: Colors.red.shade400,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-
-                        // Centered board
-                        Center(
-                          child: BoardWidget(
-                            letters: game.letters,
-                            feedback: game.feedback,
-                            tileSize: 64,
-                            gap: 10,
-                            revealRowIndex: game.lastRevealedRow,
-                            shakeRowIndex: game.shakeRowIndex,
-                            shakeTrigger: game.shakeToken,
-                            bounceRevealedRow: game.status == GameStatus.won,
-                            bounceTrigger: game.lastRevealedRow,
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        // Keyboard
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: HudOverlay(
-                            onKey: game.onKey,
-                            keyStatuses: Map<String, LetterStatus>.from(game.keyStatuses),
-                          ),
-                        ),
-                      ],
+                    // Divider
+                    Container(
+                      height: 1,
+                      color: RetroTheme.border,
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
                     ),
-                  ),
+
+                    const SizedBox(height: 4),
+
+                    // Invalid word message
+                    if (game.showInvalidMessage)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          'NOT IN WORD LIST',
+                          style: RetroTheme.section.copyWith(
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      ),
+
+                    // Centered board
+                    Center(
+                      child: BoardWidget(
+                        rows: game.rows,
+                        cols: game.cols,
+                        letters: game.letters,
+                        feedback: game.displayFeedback,
+                        tileSize: 60,
+                        gap: 8,
+                        revealRowIndex: game.lastRevealedRow,
+                        shakeRowIndex: game.shakeRowIndex,
+                        shakeTrigger: game.shakeToken,
+                        bounceRevealedRow: game.status == GameStatus.won,
+                        bounceTrigger: game.lastRevealedRow,
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    // Keyboard
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: HudOverlay(
+                        onKey: game.onKey,
+                        keyStatuses: Map<String, LetterStatus>.from(game.displayKeyStatuses),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         ),

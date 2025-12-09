@@ -5,6 +5,7 @@
 ///   - Computes feedback
 ///   - Tracks animations and win/lose state
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/models/game_mode.dart';
 import '../../core/models/letter_status.dart';
@@ -51,6 +52,11 @@ class FlutterWordleGame extends ChangeNotifier {
   /// Show "not in word list" message
   bool showInvalidMessage = false;
 
+  /// timer fields
+  static const int _timedModeSeconds = 120;
+  Timer? _timer;
+  int? secondsLeft;
+
   FlutterWordleGame({
     required this.target,
     required this.wordService,
@@ -58,6 +64,76 @@ class FlutterWordleGame extends ChangeNotifier {
   }) {
     letters = List.generate(rows, (_) => List.filled(cols, ''));
     feedback = List.generate(rows, (_) => List.filled(cols, LetterStatus.unknown));
+
+    // starting timer in timed mode
+    if (mode == GameMode.timed) {
+      secondsLeft = _timedModeSeconds;
+      _startTimer();
+    }
+  }
+
+  bool get isTimed => mode == GameMode.timed;
+
+  /// ----- new for different feedback display in game modes!
+  /// feedback matrix for display
+  List<List<LetterStatus>> get displayFeedback {
+    if (mode == GameMode.swap) {
+      return [
+        for (final row in feedback)
+          [for (final s in row) _swapStatus(s)]
+      ];
+    }
+
+    if (mode == GameMode.noYellowHints) {
+      return [
+        for (final row in feedback)
+          [for (final s in row) _hideYellow(s)]
+      ];
+    }
+
+    return feedback; // classic
+  }
+
+  /// keyboard key statuses for display
+  Map<String, LetterStatus> get displayKeyStatuses {
+    if (mode == GameMode.swap) {
+      return {
+        for (final e in keyStatuses.entries)
+          e.key: _swapStatus(e.value),
+      };
+    }
+
+    if (mode == GameMode.noYellowHints) {
+      return {
+        for (final e in keyStatuses.entries)
+          e.key: _hideYellow(e.value),
+      };
+    }
+
+    return keyStatuses;
+  }
+
+  /// swap meaning of colors:
+  /// green = incorrect place, yellow = wrong, gray = correct
+  LetterStatus _swapStatus(LetterStatus status) {
+    switch (status) {
+      case LetterStatus.correct:
+        return LetterStatus.absent;   // show gray
+      case LetterStatus.present:
+        return LetterStatus.correct;  // show green
+      case LetterStatus.absent:
+        return LetterStatus.present;  // show yellow
+      case LetterStatus.unknown:
+        return LetterStatus.unknown;
+    }
+  }
+
+  /// hiding yellow
+  LetterStatus _hideYellow(LetterStatus status) {
+    if (status == LetterStatus.present) {
+      return LetterStatus.absent;
+    }
+    return status;
   }
 
   // Input from keyboard overlay
@@ -126,6 +202,7 @@ class FlutterWordleGame extends ChangeNotifier {
     final won = fb.every((e) => e == LetterStatus.correct);
     if (won) {
       status = GameStatus.won;
+      _timer?.cancel(); // stop timer when game ends
       notifyListeners();
       return;
     }
@@ -137,6 +214,7 @@ class FlutterWordleGame extends ChangeNotifier {
     // Check lose condition
     if (_row >= rows) {
       status = GameStatus.lost;
+      _timer?.cancel(); // stop timer when lost
       notifyListeners();
       return;
     }
@@ -162,5 +240,49 @@ class FlutterWordleGame extends ChangeNotifier {
       }
     }
     return rank(newS) >= rank(oldS) ? newS : oldS;
+  }
+
+  /// timer logic
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (status != GameStatus.playing) {
+        timer.cancel();
+        return;
+      }
+      if (secondsLeft == null) {
+        timer.cancel();
+        return;
+      }
+
+      secondsLeft = secondsLeft! - 1;
+
+      if (secondsLeft! <= 0) {
+        secondsLeft = 0;
+        status = GameStatus.lost;
+        notifyListeners();
+        timer.cancel();
+      } else {
+        notifyListeners();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String get formattedTime {
+    if (secondsLeft == null) return '';
+
+    final m = secondsLeft! ~/ 60;
+    final s = secondsLeft! % 60;
+
+    final mm = m.toString().padLeft(2, '0');
+    final ss = s.toString().padLeft(2, '0');
+
+    return '$mm:$ss';
   }
 }
