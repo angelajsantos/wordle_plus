@@ -21,7 +21,7 @@ class ProgressService {
 
     // global stats
     final gp = (p.getInt(_gamesPlayed) ?? 0) + 1;
-    final w = (p.getInt(_wins) ?? 0) + (win ? 1: 0);
+    final w = (p.getInt(_wins) ?? 0) + (win ? 1 : 0);
     await p.setInt(_gamesPlayed, gp);
     await p.setInt(_wins, w);
 

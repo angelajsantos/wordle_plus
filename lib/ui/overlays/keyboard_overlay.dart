@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../../core/models/letter_status.dart';
 import '../theme/retro_theme.dart';
 
@@ -30,7 +31,8 @@ class _HudOverlayState extends State<HudOverlay> {
   void initState() {
     super.initState();
     // ensure we get focus when built
-    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _focusNode.requestFocus());
   }
 
   @override
@@ -42,10 +44,14 @@ class _HudOverlayState extends State<HudOverlay> {
   Color _bgFor(String ch) {
     final status = widget.keyStatuses[ch] ?? LetterStatus.unknown;
     switch (status) {
-      case LetterStatus.correct: return const Color(0xFF6AAA64);
-      case LetterStatus.present: return const Color(0xFFC9B458);
-      case LetterStatus.absent:  return const Color(0xFF2A2A34);
-      case LetterStatus.unknown: return const Color(0xFF787C7E);
+      case LetterStatus.correct:
+        return const Color(0xFF6AAA64);
+      case LetterStatus.present:
+        return const Color(0xFFC9B458);
+      case LetterStatus.absent:
+        return const Color(0xFF2A2A34);
+      case LetterStatus.unknown:
+        return const Color(0xFF787C7E);
     }
   }
 
@@ -108,33 +114,37 @@ class _HudOverlayState extends State<HudOverlay> {
                               _pressVisual(ch);
                               widget.onKey(ch);
                               _focusNode.requestFocus();
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 100),
-                            curve: Curves.easeOut,
-                            decoration: BoxDecoration(
-                              color: _pressed.contains(ch)
-                                  ? RetroTheme.border
-                                  : _bgFor(ch),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: RetroTheme.border,
-                                width: 2,
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 100),
+                              curve: Curves.easeOut,
+                              decoration: BoxDecoration(
+                                color: _pressed.contains(ch)
+                                    ? RetroTheme.border
+                                    : _bgFor(ch),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: RetroTheme.border,
+                                  width: 2,
+                                ),
                               ),
-                            ),
-                            alignment: Alignment.center,
-                            width: ch == '<' ? 72 : 36,
-                            height: 40,
-                            child: Text(
-                              ch == '<' ? 'ENTER' : ch == '>' ? '⌫' : ch,
-                              style: RetroTheme.button.copyWith(
-                                fontSize: ch == '<' ? 10 : 11,
-                                color: RetroTheme.textPrimary,
+                              alignment: Alignment.center,
+                              width: ch == '<' ? 72 : 36,
+                              height: 40,
+                              child: Text(
+                                ch == '<'
+                                    ? 'ENTER'
+                                    : ch == '>'
+                                        ? '⌫'
+                                        : ch,
+                                style: RetroTheme.button.copyWith(
+                                  fontSize: ch == '<' ? 10 : 11,
+                                  color: RetroTheme.textPrimary,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

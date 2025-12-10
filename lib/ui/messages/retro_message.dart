@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+
 import '../../ui/theme/retro_theme.dart';
 
 class RetroMessage {
   static void show(
-      BuildContext context,
-      String message, {
-        Color? bgColor,
-        Duration duration = const Duration(seconds: 2),
-      }) {
+    BuildContext context,
+    String message, {
+    Color? bgColor,
+    Duration duration = const Duration(seconds: 2),
+  }) {
     final color = bgColor ?? RetroTheme.surface;
     final overlay = Overlay.of(context);
-
 
     final entry = OverlayEntry(
       builder: (context) => Positioned(

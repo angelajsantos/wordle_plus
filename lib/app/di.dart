@@ -6,11 +6,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import '../core/services/word_service.dart';
-import '../core/services/progress_service.dart';
+
 import '../core/services/achievement_service.dart';
 import '../core/services/custom_word_service.dart';
 import '../core/services/hint_service.dart';
+import '../core/services/progress_service.dart';
+import '../core/services/word_service.dart';
 
 List<SingleChildWidget> buildProviders(WordService wordService) {
   return [

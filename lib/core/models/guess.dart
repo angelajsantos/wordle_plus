@@ -7,5 +7,6 @@ import 'letter_status.dart';
 class Guess {
   final String word;
   final List<LetterStatus> feedback;
+
   Guess(this.word, this.feedback);
 }

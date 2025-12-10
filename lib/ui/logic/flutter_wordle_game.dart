@@ -6,17 +6,15 @@
 ///   - Tracks animations and win/lose state
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../../core/models/game_mode.dart';
 import '../../core/models/letter_status.dart';
-import '../../core/services/word_service.dart';
 import '../../core/services/custom_word_service.dart';
+import '../../core/services/word_service.dart';
 
-enum GameStatus {
-  playing,
-  won,
-  lost
-}
+enum GameStatus { playing, won, lost }
 
 class FlutterWordleGame extends ChangeNotifier {
   final GameMode mode;
@@ -24,10 +22,12 @@ class FlutterWordleGame extends ChangeNotifier {
   final CustomWordService customService;
 
   int get rows => mode.rows;
+
   int get cols => mode.cols;
 
   final Map<String, LetterStatus> keyStatuses = {
-    for (var c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')) c: LetterStatus.unknown,
+    for (var c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''))
+      c: LetterStatus.unknown,
   };
 
   final String target;
@@ -66,7 +66,8 @@ class FlutterWordleGame extends ChangeNotifier {
     this.mode = GameMode.classic,
   }) {
     letters = List.generate(rows, (_) => List.filled(cols, ''));
-    feedback = List.generate(rows, (_) => List.filled(cols, LetterStatus.unknown));
+    feedback =
+        List.generate(rows, (_) => List.filled(cols, LetterStatus.unknown));
 
     // starting timer in timed mode
     if (mode == GameMode.timed) {
@@ -82,15 +83,13 @@ class FlutterWordleGame extends ChangeNotifier {
   List<List<LetterStatus>> get displayFeedback {
     if (mode == GameMode.swap) {
       return [
-        for (final row in feedback)
-          [for (final s in row) _swapStatus(s)]
+        for (final row in feedback) [for (final s in row) _swapStatus(s)]
       ];
     }
 
     if (mode == GameMode.noYellowHints) {
       return [
-        for (final row in feedback)
-          [for (final s in row) _hideYellow(s)]
+        for (final row in feedback) [for (final s in row) _hideYellow(s)]
       ];
     }
 
@@ -101,15 +100,13 @@ class FlutterWordleGame extends ChangeNotifier {
   Map<String, LetterStatus> get displayKeyStatuses {
     if (mode == GameMode.swap) {
       return {
-        for (final e in keyStatuses.entries)
-          e.key: _swapStatus(e.value),
+        for (final e in keyStatuses.entries) e.key: _swapStatus(e.value),
       };
     }
 
     if (mode == GameMode.noYellowHints) {
       return {
-        for (final e in keyStatuses.entries)
-          e.key: _hideYellow(e.value),
+        for (final e in keyStatuses.entries) e.key: _hideYellow(e.value),
       };
     }
 
@@ -121,11 +118,11 @@ class FlutterWordleGame extends ChangeNotifier {
   LetterStatus _swapStatus(LetterStatus status) {
     switch (status) {
       case LetterStatus.correct:
-        return LetterStatus.absent;   // show gray
+        return LetterStatus.absent; // show gray
       case LetterStatus.present:
-        return LetterStatus.correct;  // show green
+        return LetterStatus.correct; // show green
       case LetterStatus.absent:
-        return LetterStatus.present;  // show yellow
+        return LetterStatus.present; // show yellow
       case LetterStatus.unknown:
         return LetterStatus.unknown;
     }
@@ -187,7 +184,7 @@ class FlutterWordleGame extends ChangeNotifier {
       showInvalidMessage = true;
       _triggerShake();
       notifyListeners();
-    return;
+      return;
     }
 
     // computes feedback
@@ -240,12 +237,17 @@ class FlutterWordleGame extends ChangeNotifier {
   LetterStatus _prefer(LetterStatus oldS, LetterStatus newS) {
     int rank(LetterStatus s) {
       switch (s) {
-        case LetterStatus.unknown: return 0;
-        case LetterStatus.absent: return 1;
-        case LetterStatus.present: return 2;
-        case LetterStatus.correct: return 3;
+        case LetterStatus.unknown:
+          return 0;
+        case LetterStatus.absent:
+          return 1;
+        case LetterStatus.present:
+          return 2;
+        case LetterStatus.correct:
+          return 3;
       }
     }
+
     return rank(newS) >= rank(oldS) ? newS : oldS;
   }
 

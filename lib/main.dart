@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'app/app.dart';
 import 'app/di.dart';
 import 'core/services/word_service.dart';

@@ -8,7 +8,9 @@ class HintService extends ChangeNotifier {
   final List<String> _history = <String>[];
 
   int get hintsRemaining => _hintsRemaining;
+
   List<String> get history => List.unmodifiable(_history);
+
   Set<int> get hintedIndexes => Set.unmodifiable(_hintedIndexes);
 
   void resetForNewGame() {

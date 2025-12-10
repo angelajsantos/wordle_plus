@@ -1,10 +1,10 @@
 /// ENDGAME MESSAGES:
 ///   centralized win/lose bottom-sheet ui
 
-import 'package:flutter/material.dart';
-import '../theme/retro_theme.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter/material.dart';
 
+import '../theme/retro_theme.dart';
 
 class EndGameMessages {
   static Future<void> showEndSheet({
@@ -104,7 +104,9 @@ class _EndGameDialogState extends State<_EndGameDialog> {
                     textAlign: TextAlign.center,
                     style: RetroTheme.title.copyWith(
                       fontSize: 20,
-                      color: widget.won ? RetroTheme.accent : const Color(0xFFC9B458),
+                      color: widget.won
+                          ? RetroTheme.accent
+                          : const Color(0xFFC9B458),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -120,7 +122,8 @@ class _EndGameDialogState extends State<_EndGameDialog> {
                   if (widget.onPlayAgain != null) ...[
                     PixelButton(
                       label: 'PLAY AGAIN',
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       onPressed: () {
                         Navigator.pop(context);
                         widget.onPlayAgain!.call();
@@ -131,7 +134,8 @@ class _EndGameDialogState extends State<_EndGameDialog> {
 
                   PixelButton(
                     label: 'OK',
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],

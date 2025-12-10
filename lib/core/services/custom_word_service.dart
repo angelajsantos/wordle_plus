@@ -1,5 +1,6 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomWordService {
   static const _prefsKey = 'custom_word_bank_v1';
@@ -12,7 +13,8 @@ class CustomWordService {
 
   Future<void> setWords(List<String> words) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_prefsKey, words.map((e) => e.toUpperCase()).toList());
+    await prefs.setStringList(
+        _prefsKey, words.map((e) => e.toUpperCase()).toList());
   }
 
   Future<void> addWord(String word) async {

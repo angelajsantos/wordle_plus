@@ -4,8 +4,9 @@
 ///   - about button -> about screen
 
 import 'package:flutter/material.dart';
-import '../theme/retro_theme.dart';
+
 import '../../core/services/progress_service.dart';
+import '../theme/retro_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,9 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Text('Wordle+', style: RetroTheme.logo),
               const SizedBox(height: 12),
-              const Text(
-                'RETRO EDITION',
-                style: RetroTheme.section),
+              const Text('RETRO EDITION', style: RetroTheme.section),
               const SizedBox(height: 24),
               const Text(
                 'A small Wordle-inspired game\nwith extra modes',

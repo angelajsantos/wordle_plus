@@ -2,14 +2,15 @@
 ///   flutter row effects. applies shakes and bounce.
 
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 class RowEffects extends StatefulWidget {
   final Widget child;
-  final bool shake;           // true to shake
-  final bool bounce;          // true to bounce
-  final int shakeTrigger;     // bump value to retrigger shake
-  final int bounceTrigger;    // bump value to retrigger bounce
+  final bool shake; // true to shake
+  final bool bounce; // true to bounce
+  final int shakeTrigger; // bump value to retrigger shake
+  final int bounceTrigger; // bump value to retrigger bounce
 
   const RowEffects({
     super.key,
@@ -24,8 +25,7 @@ class RowEffects extends StatefulWidget {
   State<RowEffects> createState() => _RowEffectsState();
 }
 
-class _RowEffectsState extends State<RowEffects>
-    with TickerProviderStateMixin {
+class _RowEffectsState extends State<RowEffects> with TickerProviderStateMixin {
   late final AnimationController _shake;
   late final AnimationController _bounce;
 
@@ -35,8 +35,10 @@ class _RowEffectsState extends State<RowEffects>
   @override
   void initState() {
     super.initState();
-    _shake = AnimationController(vsync: this, duration: const Duration(milliseconds: 160));
-    _bounce = AnimationController(vsync: this, duration: const Duration(milliseconds: 180));
+    _shake = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 160));
+    _bounce = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 180));
   }
 
   @override

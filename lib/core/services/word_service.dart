@@ -4,7 +4,9 @@
 ///   words_6.txt for six-letter words
 
 import 'dart:math';
+
 import 'package:flutter/services.dart';
+
 import '../models/letter_status.dart';
 
 class WordService {
@@ -14,8 +16,11 @@ class WordService {
   final Set<String> allowed6;
   final List<String> answers6;
 
-  WordService({required this.allowed5, required this.answers5,
-               required this.allowed6, required this.answers6});
+  WordService(
+      {required this.allowed5,
+      required this.answers5,
+      required this.allowed6,
+      required this.answers6});
 
   /// Factory constructor to load words from asset file
   static Future<WordService> loadFromAssets() async {
@@ -69,7 +74,16 @@ class WordService {
       print(' Make sure assets/words/words.txt exists!');
 
       // Fallback with minimal words
-      final fallback5 = {'ABOUT', 'MAGIC', 'SOUND', 'BRICK', 'LIGHT', 'ROUND', 'HOUSE', 'WORLD'};
+      final fallback5 = {
+        'ABOUT',
+        'MAGIC',
+        'SOUND',
+        'BRICK',
+        'LIGHT',
+        'ROUND',
+        'HOUSE',
+        'WORLD'
+      };
       final fallback6 = {'PLANET', 'SCHOOL', 'FRIEND', 'BUTTON', 'WINDOW'};
 
       return WordService(
@@ -87,8 +101,7 @@ class WordService {
 
     if (length == 6) {
       return g.length == 6 && allowed6.contains(g);
-    }
-    else {
+    } else {
       // defaults to five-letter
       return g.length == 5 && allowed5.contains(g);
     }

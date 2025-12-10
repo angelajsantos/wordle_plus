@@ -1,9 +1,4 @@
 /// LetterStatus:
 ///   tile feedback states
 
-enum LetterStatus {
-  unknown,
-  absent,
-  present,
-  correct
-}
+enum LetterStatus { unknown, absent, present, correct }

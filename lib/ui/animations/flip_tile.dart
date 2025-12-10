@@ -2,6 +2,7 @@
 ///   flutter tile flip animation
 
 import 'package:flutter/material.dart';
+
 import '../../core/models/letter_status.dart';
 
 class AnimatedFlipTile extends StatefulWidget {
@@ -61,10 +62,14 @@ class _AnimatedFlipTileState extends State<AnimatedFlipTile>
 
   Color _bg(LetterStatus s) {
     switch (s) {
-      case LetterStatus.correct: return const Color(0xFF6AAA64);
-      case LetterStatus.present: return const Color(0xFFC9B458);
-      case LetterStatus.absent:  return const Color(0xFF3A3A3C);
-      case LetterStatus.unknown: return const Color(0xFF787C7E);
+      case LetterStatus.correct:
+        return const Color(0xFF6AAA64);
+      case LetterStatus.present:
+        return const Color(0xFFC9B458);
+      case LetterStatus.absent:
+        return const Color(0xFF3A3A3C);
+      case LetterStatus.unknown:
+        return const Color(0xFF787C7E);
     }
   }
 

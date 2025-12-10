@@ -4,16 +4,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:wordle_plus/ui/screens/custom_word_add_screen.dart';
+
 import '../../core/models/game_mode.dart';
-import 'game_screen.dart';
-import '../theme/retro_theme.dart';
 import '../../core/services/progress_service.dart';
 import '../messages/retro_message.dart';
+import '../theme/retro_theme.dart';
+import 'game_screen.dart';
 
 class ModesScreen extends StatelessWidget {
-  const ModesScreen({
-    super.key
-  });
+  const ModesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +36,8 @@ class ModesScreen extends StatelessWidget {
               return Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
                       color: RetroTheme.surface,
                       borderRadius: BorderRadius.circular(4),
@@ -64,12 +64,14 @@ class ModesScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         PixelButton(
                           label: 'GO!',
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
                           onPressed: () async {
                             // gates daily mode
                             if (mode == GameMode.daily) {
                               final progress = ProgressService();
-                              final already = await progress.hasPlayedDailyToday();
+                              final already =
+                                  await progress.hasPlayedDailyToday();
                               if (already) {
                                 RetroMessage.show(
                                   context,
@@ -103,11 +105,13 @@ class ModesScreen extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: RetroTheme.accent, width: 2),
+                            border:
+                                Border.all(color: RetroTheme.accent, width: 2),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

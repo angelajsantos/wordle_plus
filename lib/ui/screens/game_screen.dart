@@ -10,21 +10,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/services/progress_service.dart';
-import '../overlays/keyboard_overlay.dart';
-import '../../core/models/letter_status.dart';
 import '../../core/models/game_mode.dart';
-import '../../core/services/word_service.dart';
+import '../../core/models/letter_status.dart';
 import '../../core/services/custom_word_service.dart';
-import '../logic/flutter_wordle_game.dart';
-import '../widgets/board_widget.dart';
-import '../messages/endgame_messages.dart';
-import '../theme/retro_theme.dart';
-import '../messages/retro_message.dart';
 import '../../core/services/hint_service.dart';
+import '../../core/services/progress_service.dart';
+import '../../core/services/word_service.dart';
+import '../logic/flutter_wordle_game.dart';
+import '../messages/endgame_messages.dart';
+import '../messages/retro_message.dart';
+import '../overlays/keyboard_overlay.dart';
+import '../theme/retro_theme.dart';
+import '../widgets/board_widget.dart';
 
 class GameScreen extends StatefulWidget {
   final GameMode mode;
+
   const GameScreen({super.key, this.mode = GameMode.classic});
 
   @override
@@ -35,7 +36,8 @@ class _GameScreenState extends State<GameScreen> {
   bool _endShown = false;
 
   Color _timerColor(FlutterWordleGame game) {
-    if (!game.isTimed || game.secondsLeft == null) return RetroTheme.textPrimary;
+    if (!game.isTimed || game.secondsLeft == null)
+      return RetroTheme.textPrimary;
     final s = game.secondsLeft!;
     if (s > 30) return RetroTheme.accent;
     if (s > 10) return const Color(0xFFC9B458);
@@ -45,7 +47,8 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final wordService = Provider.of<WordService>(context, listen: false);
-    final customService = Provider.of<CustomWordService>(context, listen: false);
+    final customService =
+        Provider.of<CustomWordService>(context, listen: false);
     final progressService = ProgressService();
 
     // Picks the target word for the selected mode.
@@ -55,7 +58,8 @@ class _GameScreenState extends State<GameScreen> {
         if (w != null) return w;
         final normal = wordService.getRandomAnswer(length: widget.mode.cols);
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          RetroMessage.show(context, 'Custom bank empty — using regular word list');
+          RetroMessage.show(
+              context, 'Custom bank empty — using regular word list');
         });
         return normal;
       }
@@ -66,7 +70,8 @@ class _GameScreenState extends State<GameScreen> {
       future: _resolveTarget(),
       builder: (context, snap) {
         if (!snap.hasData) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
         }
 
         // Reset hint state for a fresh round.
@@ -87,8 +92,10 @@ class _GameScreenState extends State<GameScreen> {
               backgroundColor: RetroTheme.bg,
               elevation: 0,
               centerTitle: true,
-              iconTheme: const IconThemeData(color: RetroTheme.textPrimary, size: 20),
-              title: Text(widget.mode.label.toUpperCase(), style: RetroTheme.title),
+              iconTheme:
+                  const IconThemeData(color: RetroTheme.textPrimary, size: 20),
+              title: Text(widget.mode.label.toUpperCase(),
+                  style: RetroTheme.title),
               actions: const [_HintButton()],
             ),
             body: Consumer<FlutterWordleGame>(
@@ -110,7 +117,8 @@ class _GameScreenState extends State<GameScreen> {
                       onPlayAgain: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => GameScreen(mode: widget.mode)),
+                          MaterialPageRoute(
+                              builder: (_) => GameScreen(mode: widget.mode)),
                         );
                       },
                     );
@@ -131,7 +139,8 @@ class _GameScreenState extends State<GameScreen> {
                                   padding: const EdgeInsets.only(top: 4.0),
                                   child: Text(
                                     'TIME LEFT: ${game.formattedTime}',
-                                    style: RetroTheme.section.copyWith(color: _timerColor(game)),
+                                    style: RetroTheme.section
+                                        .copyWith(color: _timerColor(game)),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -139,7 +148,8 @@ class _GameScreenState extends State<GameScreen> {
                               Container(
                                 height: 1,
                                 color: RetroTheme.border,
-                                margin: const EdgeInsets.symmetric(horizontal: 12),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 12),
                               ),
                               const SizedBox(height: 4),
                               if (game.showInvalidMessage)
@@ -147,7 +157,8 @@ class _GameScreenState extends State<GameScreen> {
                                   padding: const EdgeInsets.only(bottom: 8),
                                   child: Text(
                                     'NOT IN WORD LIST',
-                                    style: RetroTheme.section.copyWith(color: Colors.redAccent),
+                                    style: RetroTheme.section
+                                        .copyWith(color: Colors.redAccent),
                                   ),
                                 ),
                               Center(
@@ -161,7 +172,8 @@ class _GameScreenState extends State<GameScreen> {
                                   revealRowIndex: game.lastRevealedRow,
                                   shakeRowIndex: game.shakeRowIndex,
                                   shakeTrigger: game.shakeToken,
-                                  bounceRevealedRow: game.status == GameStatus.won,
+                                  bounceRevealedRow:
+                                      game.status == GameStatus.won,
                                   bounceTrigger: game.lastRevealedRow,
                                 ),
                               ),
@@ -230,16 +242,16 @@ class _HintButton extends StatelessWidget {
     return TextButton.icon(
       onPressed: canHint
           ? () {
-        final msg = hintSvc.revealHint(
-          answer: answer,
-          greens: greens,
-        );
-        if (msg == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('All letters already known')),
-          );
-        }
-      }
+              final msg = hintSvc.revealHint(
+                answer: answer,
+                greens: greens,
+              );
+              if (msg == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All letters already known')),
+                );
+              }
+            }
           : null,
       icon: const Icon(Icons.tips_and_updates_outlined),
       label: Text('Hint (${hintSvc.hintsRemaining})'),

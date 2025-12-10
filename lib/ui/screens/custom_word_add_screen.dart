@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/services/custom_word_service.dart';
-import '../theme/retro_theme.dart';
 import '../../ui/messages/retro_message.dart';
+import '../theme/retro_theme.dart';
 
 class CustomWordAddScreen extends StatefulWidget {
   const CustomWordAddScreen({super.key});
@@ -144,11 +145,11 @@ class _CustomWordAddScreenState extends State<CustomWordAddScreen> {
                           contentPadding: const EdgeInsets.all(12),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: RetroTheme.border, width: 2),
+                                BorderSide(color: RetroTheme.border, width: 2),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: RetroTheme.accent, width: 2),
+                                BorderSide(color: RetroTheme.accent, width: 2),
                           ),
                         ),
                       ),
@@ -161,8 +162,8 @@ class _CustomWordAddScreenState extends State<CustomWordAddScreen> {
                           decoration: BoxDecoration(
                             color: RetroTheme.accent,
                             borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: RetroTheme.border, width: 2),
+                            border:
+                                Border.all(color: RetroTheme.border, width: 2),
                           ),
                           child: Center(
                             child: Text(
@@ -186,43 +187,43 @@ class _CustomWordAddScreenState extends State<CustomWordAddScreen> {
                   child: _words.isEmpty
                       ? Text("NO CUSTOM WORDS ADDED", style: RetroTheme.section)
                       : ListView.separated(
-                    itemCount: _words.length,
-                    separatorBuilder: (_, __) =>
-                    const SizedBox(height: 8),
-                    itemBuilder: (_, i) {
-                      final w = _words[i];
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: RetroTheme.surface,
-                          border: Border.all(
-                              color: RetroTheme.border, width: 2),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                w,
-                                style: RetroTheme.title.copyWith(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
+                          itemCount: _words.length,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 8),
+                          itemBuilder: (_, i) {
+                            final w = _words[i];
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: RetroTheme.surface,
+                                border: Border.all(
+                                    color: RetroTheme.border, width: 2),
+                                borderRadius: BorderRadius.circular(4),
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () => _removeWord(w),
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.redAccent,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      w,
+                                      style: RetroTheme.title.copyWith(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => _removeWord(w),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      color: Colors.redAccent,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),

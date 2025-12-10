@@ -3,10 +3,10 @@
 ///   - renders the tile grid and anims
 
 import 'package:flutter/material.dart';
+
 import '../../core/models/letter_status.dart';
 import '../animations/flip_tile.dart';
 import '../animations/row_effects.dart';
-import '../theme/retro_theme.dart';
 
 class BoardWidget extends StatelessWidget {
   final int rows;
