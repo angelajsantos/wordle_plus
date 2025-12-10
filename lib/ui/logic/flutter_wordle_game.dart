@@ -184,8 +184,9 @@ class FlutterWordleGame extends ChangeNotifier {
         (await customService.getWords()).contains(_current.toUpperCase());
 
     if (!isValid) {
-    _triggerShake();
-    notifyListeners();
+      showInvalidMessage = true;
+      _triggerShake();
+      notifyListeners();
     return;
     }
 

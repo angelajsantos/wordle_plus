@@ -34,72 +34,103 @@ class ModesScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             itemBuilder: (_, i) {
               final mode = modes[i];
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                decoration: BoxDecoration(
-                  color: RetroTheme.surface,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: RetroTheme.border, width: 2),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            mode.label.toUpperCase(),
-                            style: RetroTheme.title.copyWith(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(mode.description, style: RetroTheme.body),
-                        ],
-                      ),
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: RetroTheme.surface,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: RetroTheme.border, width: 2),
                     ),
-                    const SizedBox(width: 12),
-                    PixelButton(
-                      label: 'GO!',
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      onPressed: () async {
-                        // handles custom-word-add separately
-                        if (mode == GameMode.customWordAdd) {
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                mode.label.toUpperCase(),
+                                style: RetroTheme.title.copyWith(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(mode.description, style: RetroTheme.body),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        PixelButton(
+                          label: 'GO!',
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          onPressed: () async {
+                            // gates daily mode
+                            if (mode == GameMode.daily) {
+                              final progress = ProgressService();
+                              final already = await progress.hasPlayedDailyToday();
+                              if (already) {
+                                RetroMessage.show(
+                                  context,
+                                  "You've already completed today's daily.\nCome back tomorrow!",
+                                );
+                                return;
+                              }
+                            }
+                            // all other modes go to game screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => GameScreen(mode: mode),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (mode.hasCustomWordManagement)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: GestureDetector(
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => const CustomWordAddScreen(),
                             ),
                           );
-                          return;
-                        }
-
-                        // gates daily mode
-                        if (mode == GameMode.daily) {
-                          final progress = ProgressService();
-                          final already = await progress.hasPlayedDailyToday();
-
-                          if (already) {
-                            RetroMessage.show(
-                              context,
-                              "You've already completed today's daily.\nCome back tomorrow!",
-                            );
-                            return;
-                          }
-                        }
-
-                        // all other modes go to game screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => GameScreen(mode: mode),
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: RetroTheme.accent, width: 2),
                           ),
-                        );
-                      },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.edit,
+                                color: RetroTheme.accent,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'MANAGE CUSTOM WORDS',
+                                style: RetroTheme.section.copyWith(
+                                  color: RetroTheme.accent,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ],
-                ),
+                ],
               );
             },
             separatorBuilder: (_, __) => const SizedBox(height: 12),

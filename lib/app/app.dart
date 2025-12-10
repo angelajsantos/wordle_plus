@@ -7,7 +7,6 @@ import '../ui/screens/about_screen.dart';
 import '../ui/screens/game_screen.dart';
 import '../ui/screens/home_screen.dart';
 import '../ui/screens/modes_screen.dart';
-import 'package:wordle_plus/ui/screens/custom_word_add_screen.dart';
 
 class WordleApp extends StatelessWidget {
   const WordleApp({super.key});
@@ -31,7 +30,6 @@ class WordleApp extends StatelessWidget {
         '/': (_) => const HomeScreen(),
         '/modes': (_) => const ModesScreen(),
         '/about': (_) => const AboutScreen(),
-        '/custom-word': (_) => const CustomWordAddScreen(),
       },
     );
   }
