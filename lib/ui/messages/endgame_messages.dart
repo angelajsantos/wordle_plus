@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import '../theme/retro_theme.dart';
 import 'package:confetti/confetti.dart';
 
+
 class EndGameMessages {
   static Future<void> showEndSheet({
     required BuildContext context,
     required bool won,
     required String target,
     required int attempts, // 1-based
+    VoidCallback? onPlayAgain, // new
   }) {
     return showDialog(
       context: context,
@@ -19,6 +21,7 @@ class EndGameMessages {
         won: won,
         target: target,
         attempts: attempts,
+        onPlayAgain: onPlayAgain, // new
       ),
     );
   }
@@ -28,11 +31,13 @@ class _EndGameDialog extends StatefulWidget {
   final bool won;
   final String target;
   final int attempts;
+  final VoidCallback? onPlayAgain; // new
 
   const _EndGameDialog({
     required this.won,
     required this.target,
     required this.attempts,
+    this.onPlayAgain, // new
   });
 
   @override
@@ -70,17 +75,17 @@ class _EndGameDialogState extends State<_EndGameDialog> {
         color: Colors.transparent,
         child: Stack(
           alignment: Alignment.topCenter,
-            children: [
-              // confetti layer
-              ConfettiWidget(
-                confettiController: _confetti,
-                blastDirectionality: BlastDirectionality.explosive,
-                shouldLoop: false,
-                emissionFrequency: 0.05,
-                numberOfParticles: 12,
-                maxBlastForce: 20,
-                minBlastForce: 8,
-                gravity: 0.4,
+          children: [
+            // confetti layer
+            ConfettiWidget(
+              confettiController: _confetti,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              emissionFrequency: 0.05,
+              numberOfParticles: 12,
+              maxBlastForce: 20,
+              minBlastForce: 8,
+              gravity: 0.4,
             ),
             // dialog content
             Container(
@@ -99,10 +104,9 @@ class _EndGameDialogState extends State<_EndGameDialog> {
                     textAlign: TextAlign.center,
                     style: RetroTheme.title.copyWith(
                       fontSize: 20,
-                      color: widget.won ? RetroTheme.accent : Color(0xFFC9B458),
+                      color: widget.won ? RetroTheme.accent : const Color(0xFFC9B458),
                     ),
                   ),
-
                   const SizedBox(height: 16),
                   if (!widget.won)
                     Text(
@@ -111,10 +115,23 @@ class _EndGameDialogState extends State<_EndGameDialog> {
                       style: RetroTheme.body,
                     ),
                   const SizedBox(height: 20),
+
+                  // play again
+                  if (widget.onPlayAgain != null) ...[
+                    PixelButton(
+                      label: 'PLAY AGAIN',
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onPlayAgain!.call();
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
                   PixelButton(
                     label: 'OK',
-                    padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
