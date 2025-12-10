@@ -99,7 +99,7 @@ class _EndGameDialogState extends State<_EndGameDialog> {
                     textAlign: TextAlign.center,
                     style: RetroTheme.title.copyWith(
                       fontSize: 20,
-                      color: widget.won ? RetroTheme.accentAlt : RetroTheme.accent,
+                      color: widget.won ? RetroTheme.accent : Color(0xFFC9B458),
                     ),
                   ),
 

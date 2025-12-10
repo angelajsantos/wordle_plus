@@ -30,7 +30,6 @@ class WordleApp extends StatelessWidget {
         '/': (_) => const HomeScreen(),
         '/modes': (_) => const ModesScreen(),
         '/about': (_) => const AboutScreen(),
-        // later: '/play/:mode' or a named route to GameScreen
       },
     );
   }

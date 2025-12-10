@@ -8,13 +8,14 @@ import 'package:provider/provider.dart';
 import '../core/services/word_service.dart';
 import '../core/services/progress_service.dart';
 import '../core/services/achievement_service.dart';
-
+import '../core/services/custom_word_service.dart';
 
 List<Provider> buildProviders(WordService wordService) {
   return [
     Provider<WordService>.value(value: wordService),
     Provider(create: (_) => ProgressService()),
     Provider<AchievementService>(create: (_) => NoopAchievementService()),
+    Provider<CustomWordService>(create: (_) => CustomWordService()),
   ];
 }
 
