@@ -1,6 +1,3 @@
-/// Achievement Service:
-///   FIXME: unlock/achievements logic
-
 abstract class AchievementService {
   Future<void> onEvent(String event, Map<String, Object?> payload);
 }

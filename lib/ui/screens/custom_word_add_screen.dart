@@ -114,7 +114,7 @@ class _CustomWordAddScreenState extends State<CustomWordAddScreen> {
             padding: const EdgeInsets.all(18.0),
             child: Column(
               children: [
-                // INPUT BLOCK
+                // input block
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
@@ -182,7 +182,7 @@ class _CustomWordAddScreenState extends State<CustomWordAddScreen> {
 
                 const SizedBox(height: 20),
 
-                // WORD LIST
+                // word list
                 Expanded(
                   child: _words.isEmpty
                       ? Text("NO CUSTOM WORDS ADDED", style: RetroTheme.section)

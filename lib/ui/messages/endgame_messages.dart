@@ -11,8 +11,8 @@ class EndGameMessages {
     required BuildContext context,
     required bool won,
     required String target,
-    required int attempts, // 1-based
-    VoidCallback? onPlayAgain, // new
+    required int attempts,
+    VoidCallback? onPlayAgain,
   }) {
     return showDialog(
       context: context,
@@ -21,7 +21,7 @@ class EndGameMessages {
         won: won,
         target: target,
         attempts: attempts,
-        onPlayAgain: onPlayAgain, // new
+        onPlayAgain: onPlayAgain,
       ),
     );
   }
@@ -31,13 +31,13 @@ class _EndGameDialog extends StatefulWidget {
   final bool won;
   final String target;
   final int attempts;
-  final VoidCallback? onPlayAgain; // new
+  final VoidCallback? onPlayAgain;
 
   const _EndGameDialog({
     required this.won,
     required this.target,
     required this.attempts,
-    this.onPlayAgain, // new
+    this.onPlayAgain,
   });
 
   @override

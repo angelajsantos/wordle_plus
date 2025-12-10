@@ -20,7 +20,7 @@ class HintService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Chooses the left-most index that is not green and not hinted yet.
+  // chooses the left-most index that is not green and not hinted yet
   String? revealHint({
     required String answer,
     required Set<int> greens,

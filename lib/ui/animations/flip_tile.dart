@@ -1,6 +1,3 @@
-/// FLIP TILE:
-///   flutter tile flip animation
-
 import 'package:flutter/material.dart';
 
 import '../../core/models/letter_status.dart';

@@ -2,10 +2,6 @@
 ///  - central place to define per-mode settings
 ///  - classic = 6 rows, 5 letters
 ///  - extend with hard/timed/etc. by adding cases + config
-///
-/// HOW TO ADD A MODE
-/// 1) Add enum value (e.g., hard, timed)
-/// 2) Provide label/rows/cols in the extension
 
 enum GameMode {
   daily, // daily challenge

@@ -2,7 +2,6 @@
 ///   about screen that has
 ///   - creators
 ///   - how-to-play
-///   TODO: fix ui styling
 
 import 'package:flutter/material.dart';
 
